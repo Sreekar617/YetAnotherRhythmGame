@@ -24,7 +24,10 @@ const player = "p"
 const wall = "w"
 const bg = "b"
 const apple = "a"
+const receptor = "r"
+const haircut = "h"
 const person = "e"
+const fail = "f"
 const lava = "l"
 var points = 0
 
@@ -114,7 +117,58 @@ HHHHHHHHHHHHHHHH`],
 .....222..22..22
 .....2....22....
 ................`],
+  [fail, bitmap`
+................
+................
+................
+33333.222222....
+3.....2.....22..
+3.....2.2..2.22.
+33333.2.......2.
+3.....2.......2.
+3.....22.....22.
+3......2222222..
+3.........22....
+..........22....
+.......2222222..
+.....222..22..22
+.....2....22....
+................`],
   [lava, bitmap`
+....22....22....
+................
+................
+................
+................
+................
+................
+................
+................
+................
+................
+................
+................
+................
+................
+9999999999999999`],
+  [receptor, bitmap`
+....22....22....
+...2........2...
+..2.........2...
+222.........2...
+2...........22..
+2.............2.
+2.............2.
+222...........2.
+..2...........2.
+..2...........2.
+..2.........22..
+..2.........2...
+..2.........2...
+..2.........2...
+...2..2222..2...
+...2..2..2..2...`],
+  [haircut, bitmap`
 ................
 ................
 ................
@@ -130,7 +184,7 @@ HHHHHHHHHHHHHHHH`],
 ................
 ................
 ................
-9999999999999999`]
+......2222......`]
 
 )
 
@@ -145,19 +199,32 @@ w....w
 w....w
 w....w
 w....w
-w....w
-wp...w
+whhhhw
+wrrrrw
 wllllw`,
   map`
 e`
 ]
+
+const sounds = [
+  tune`
+500: C4-500 + F4-500 + C5-500,
+15500`,
+  tune`
+500: E4-500 + A4-500 + E5-500,
+15500`,
+  tune`
+500: G4-500 + C5-500 + G5-500,
+15500`,
+  tune`
+500: E4-500 + E5-500 + B4-500,
+15500`
+]
 setBackground(bg)
 
 setMap(levels[level])
+addSprite(1, 7, player)
 
-setPushables({
-  [player]: []
-})
 async function main() {
   let a = Math.floor(Math.random() * 10) + 1 // Generate a random number from 1 to 10
   if (getAll(apple).length < 8) {
@@ -183,26 +250,27 @@ async function main() {
   })
 
   afterInput(() => {
-    console.log(points)
+    if (tilesWith(player, apple).length > 0) {
+      points += 1
+      console.log(points)
+    }
   })
 
-  if (tilesWith(player, apple).length > 0) {
-    points += 1
-    console.log(points)
-  }
 
   // Unnecessarily complex code resets apples once they hit the bottom
   for (i = 0; i < getAll(apple).length; i++) {
-    console.log(i)
     let appleInstance = getAll(apple)[i]
-    if (appleInstance && appleInstance.y == 8) {
+    if (appleInstance && appleInstance.y == 7) {
+      playTune(sounds[Math.floor(Math.random() * 4)])
+    } else if (appleInstance && appleInstance.y == 8) {
       appleInstance.y = 0
       appleInstance.x = Math.floor(Math.random() * 4) + 1
-      points -= 1
+      points -= 2
+      console.log(points)
     }
   }
-  console.log('sigma')
 }
+
 
 // if (getFirst(apple).y == 7) {
 //   await scroll()
@@ -216,11 +284,21 @@ async function start() {
     await main()
   }
   setMap(levels[1])
-  addText(`you win!\nscore: ${points}`, {
-    x: 4,
-    y: 0,
-    color: color`1`
-  })
+  if (points > 0) {
+    addText(`you win!\nscore: ${Math.floor(points)}`, {
+      x: 4,
+      y: 0,
+      color: color`D`
+    })
+  } else {
+    clearTile(0,0)
+    addSprite(0,0,fail)
+    addText(`you lose\nscore: ${Math.floor(points)}`, {
+      x: 4,
+      y: 0,
+      color: color`3`
+    })
+  }
 }
 
 start()
