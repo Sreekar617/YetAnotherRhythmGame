@@ -3,18 +3,20 @@ First time? Check out the tutorial game:
 https://sprig.hackclub.com/gallery/getting_started
 
 @title: osu
-@author: 
-@tags: []
+@author: Sreekar617
+@tags: [beginner]
 @addedOn: 2024-00-00
 */
 
 function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 async function scroll() {
   await sleep(500)
-  getFirst(apple).y +=1
+  for (i = 0; i < getAll(apple).length; i++) {
+    getAll(apple)[i].y += 1
+  }
 }
 
 const player = "p"
@@ -115,35 +117,50 @@ setMap(levels[level])
 setPushables({
   [player]: []
 })
-async function main(){
+async function main() {
   await scroll()
-  
+
   onInput("s", () => {
     getFirst(player).x = 1
   })
-  
+
   onInput("d", () => {
     getFirst(player).x = 2
   })
-  
+
   onInput("k", () => {
     getFirst(player).x = 3
   })
-  
+
   onInput("l", () => {
     getFirst(player).x = 4
   })
-  
+
   afterInput(() => {
     if (tilesWith(player, apple).length > 0) {
-      points+= 1
+      points += 1
       console.log(points)
     }
   })
-}
 
-async function start(){
-  for (let i = 0; i < 1000; i++){
+  for (i = 0; i < getAll(apple).length; i++) {
+    let appleInstance = getAll(apple)[i];
+    if (appleInstance && appleInstance.y == 7) {
+      await scroll();
+      appleInstance.y = 0;
+    }
+  }
+  console.log('sigma')
+}
+// if (getFirst(apple).y == 7) {
+//   await scroll()
+//   getFirst(apple).y = 0
+//   addSprite(1, 1, apple)
+// }
+
+
+async function start() {
+  for (let i = 0; i < 1000; i++) {
     await main()
   }
 }
