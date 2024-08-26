@@ -1,4 +1,3 @@
-
 /*
 First time? Check out the tutorial game:
 https://sprig.hackclub.com/gallery/getting_started
@@ -9,10 +8,20 @@ https://sprig.hackclub.com/gallery/getting_started
 @addedOn: 2024-00-00
 */
 
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function scroll() {
+  await sleep(500)
+  getFirst(apple).y +=1
+}
+
 const player = "p"
 const wall = "w"
 const bg = "b"
 const apple = "a"
+var points = 0
 
 setLegend(
   [player, bitmap`
@@ -90,7 +99,7 @@ setSolids([])
 let level = 0
 const levels = [
   map`
-w....w
+w.a..w
 w....w
 w....w
 w....w
@@ -106,23 +115,37 @@ setMap(levels[level])
 setPushables({
   [player]: []
 })
+async function main(){
+  await scroll()
+  
+  onInput("s", () => {
+    getFirst(player).x = 1
+  })
+  
+  onInput("d", () => {
+    getFirst(player).x = 2
+  })
+  
+  onInput("k", () => {
+    getFirst(player).x = 3
+  })
+  
+  onInput("l", () => {
+    getFirst(player).x = 4
+  })
+  
+  afterInput(() => {
+    if (tilesWith(player, apple).length > 0) {
+      points+= 1
+      console.log(points)
+    }
+  })
+}
 
-onInput("s", () => {
-  getFirst(player).x = 1
-})
+async function start(){
+  for (let i = 0; i < 1000; i++){
+    await main()
+  }
+}
 
-onInput("d", () => {
-  getFirst(player).x = 2
-})
-
-onInput("k", () => {
-  getFirst(player).x = 3
-})
-
-onInput("l", () => {
-  getFirst(player).x = 4
-})
-
-afterInput(() => {
-  console.log(tilesWith(player, apple))
-})
+start()
