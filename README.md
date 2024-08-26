@@ -1,2 +1,3 @@
-# fake-osu
 fake osu created with [sprig](https://sprig.hackclub.com/)
+
+Sprig is a handheld console made by Hack Club running Jerryscript (Javascript engine) on a Pi Pico. They have built in commands to make tile-based games, and the console also doubles as a hardware development kit. It arrives disassembled, and you can use the parts for the console, or repurpose them for your own projects. It's powered by a Raspberry Pi Pico, so you can reflash the firmware with the touch of a button and run anything you want. The whole thing, including hardware, is open source, check them out [here](https://github.com/hackclub/sprig/)
